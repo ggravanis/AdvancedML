@@ -1,0 +1,38 @@
+
+Cost Matrix
+ 0 1
+ 5 0
+
+
+Time taken to build model: 0.01 seconds
+
+=== Stratified cross-validation ===
+=== Summary ===
+
+Correctly Classified Instances         215               79.6296 %
+Incorrectly Classified Instances        55               20.3704 %
+Kappa statistic                          0.5959
+Mean absolute error                      0.2217
+Root mean squared error                  0.406 
+Relative absolute error                 44.8801 %
+Root relative squared error             81.6993 %
+Total Number of Instances              270     
+
+=== Detailed Accuracy By Class ===
+
+                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
+                 0.733    0.125    0.880      0.733    0.800      0.606    0.888     0.903     0
+                 0.875    0.267    0.724      0.875    0.792      0.606    0.888     0.876     1
+Weighted Avg.    0.796    0.188    0.811      0.796    0.797      0.606    0.888     0.891     
+
+=== Confusion Matrix ===
+
+   a   b   <-- classified as
+ 110  40 |   a = 0
+  15 105 |   b = 1
+
+  
+  weka.classifiers.meta.MetaCost -cost-matrix "[0.0 1.0; 5.0 0.0]" -I 10 -P 100 -S 1 -W weka.classifiers.bayes.NaiveBayes
+  
+  
+  

@@ -1,0 +1,62 @@
+=== Run information ===
+
+Scheme:       weka.classifiers.meta.CostSensitiveClassifier -cost-matrix "[0.0 1.0; 5.0 0.0]" -S 1 -W weka.classifiers.functions.LibSVM -- -S 0 -K 0 -D 3 -G 0.0 -R 0.0 -N 0.5 -M 40.0 -C 1.0 -E 0.001 -P 0.1 -model "C:\\Program Files\\Weka-3-8" -seed 1
+Relation:     heart-weka.filters.AllFilter-weka.filters.unsupervised.attribute.NumericToNominal-Rfirst-last
+Instances:    270
+Attributes:   14
+              age
+              sex
+              cp
+              trestbps
+              chol
+              fbs
+              restecg
+              thalach
+              exang
+              oldpeak
+              slope
+              ca
+              thal
+              class
+Test mode:    10-fold cross-validation
+
+=== Classifier model (full training set) ===
+
+CostSensitiveClassifier using reweighted training instances
+
+weka.classifiers.functions.LibSVM -S 0 -K 0 -D 3 -G 0.0 -R 0.0 -N 0.5 -M 40.0 -C 1.0 -E 0.001 -P 0.1 -model "C:\\Program Files\\Weka-3-8" -seed 1
+
+Classifier Model
+LibSVM wrapper, original code by Yasser EL-Manzalawy (= WLSVM)
+
+Cost Matrix
+ 0 1
+ 5 0
+
+
+Time taken to build model: 0 seconds
+
+=== Stratified cross-validation ===
+=== Summary ===
+
+Correctly Classified Instances         199               73.7037 %
+Incorrectly Classified Instances        71               26.2963 %
+Kappa statistic                          0.4843
+Mean absolute error                      0.263 
+Root mean squared error                  0.5128
+Relative absolute error                 53.2446 %
+Root relative squared error            103.1988 %
+Total Number of Instances              270     
+
+=== Detailed Accuracy By Class ===
+
+                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
+                 0.633    0.133    0.856      0.633    0.728      0.505    0.750     0.746     0
+                 0.867    0.367    0.654      0.867    0.746      0.505    0.750     0.626     1
+Weighted Avg.    0.737    0.237    0.766      0.737    0.736      0.505    0.750     0.693     
+
+=== Confusion Matrix ===
+
+   a   b   <-- classified as
+  95  55 |   a = 0
+  16 104 |   b = 1

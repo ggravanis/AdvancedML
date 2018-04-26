@@ -1,0 +1,42 @@
+=== Classifier model (full training set) ===
+
+MetaCost cost sensitive classifier induction
+Options: -cost-matrix "[0.0 1.0; 5.0 0.0]" -I 10 -P 100 -S 1 -W weka.classifiers.functions.LibSVM -- -S 0 -K 0 -D 3 -G 0.0 -R 0.0 -N 0.5 -M 40.0 -C 1.0 -E 0.001 -P 0.1 -model "C:\\Program Files\\Weka-3-8" -seed 1
+Base learner: weka.classifiers.functions.LibSVM -S 0 -K 0 -D 3 -G 0.0 -R 0.0 -N 0.5 -M 40.0 -C 1.0 -E 0.001 -P 0.1 -model "C:\\Program Files\\Weka-3-8" -seed 1
+
+Classifier Model
+LibSVM wrapper, original code by Yasser EL-Manzalawy (= WLSVM)
+
+Cost Matrix
+ 0 1
+ 5 0
+
+
+Time taken to build model: 0.18 seconds
+
+=== Stratified cross-validation ===
+=== Summary ===
+
+Correctly Classified Instances         207               76.6667 %
+Incorrectly Classified Instances        63               23.3333 %
+Kappa statistic                          0.5379
+Mean absolute error                      0.2333
+Root mean squared error                  0.483 
+Relative absolute error                 47.2452 %
+Root relative squared error             97.2111 %
+Total Number of Instances              270     
+
+=== Detailed Accuracy By Class ===
+
+                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
+                 0.700    0.150    0.854      0.700    0.769      0.549    0.775     0.764     0
+                 0.850    0.300    0.694      0.850    0.764      0.549    0.775     0.656     1
+Weighted Avg.    0.767    0.217    0.783      0.767    0.767      0.549    0.775     0.716     
+
+=== Confusion Matrix ===
+
+   a   b   <-- classified as
+ 105  45 |   a = 0
+  18 102 |   b = 1
+  
+  weka.classifiers.meta.MetaCost -cost-matrix "[0.0 1.0; 5.0 0.0]" -I 10 -P 100 -S 1 -W weka.classifiers.functions.LibSVM -- -S 0 -K 0 -D 3 -G 0.0 -R 0.0 -N 0.5 -M 40.0 -C 1.0 -E 0.001 -P 0.1 -model "C:\\Program Files\\Weka-3-8" -seed 1
