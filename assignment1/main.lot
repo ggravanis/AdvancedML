@@ -1,9 +1,11 @@
 \boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
 \defcounter {refsection}{0}\relax 
-\contentsline {table}{\numberline {1}{\ignorespaces Περιγραφή των Συνόλων Δεδομένων}}{5}{table.1}
+\contentsline {table}{\numberline {1}{\ignorespaces Περιγραφή των Συνόλων Δεδομένων}}{4}{table.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {table}{\numberline {2}{\ignorespaces Αποτελέσματα από την εκπαίδευση των αλγορίθμων και από την αξιολόγησή τους στο test set του κάθε συνόλου δεδομένων.}}{7}{table.2}
+\contentsline {table}{\numberline {2}{\ignorespaces Αποτελέσματα από την εκπαίδευση των αλγορίθμων και από την αξιολόγησή τους στο test set του κάθε συνόλου δεδομένων.}}{6}{table.2}
 \defcounter {refsection}{0}\relax 
 \contentsline {table}{\numberline {3}{\ignorespaces Αποτελέσματα και κατάταξη αλγορίθμων}}{10}{table.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {table}{\numberline {4}{\ignorespaces My caption}}{11}{table.4}
+\contentsline {table}{\numberline {4}{\ignorespaces Αποτελέσματα εφαρμογής μεθόδων μείωσης κόστους στους ταξινομητές. Για κάθε Αλγόριθμο ταξινόμησης δίνεται ο πίνακας ταξινόμησης, το κόστος ταξινόμησης σύμφωνα με τον πίνακα κόστους που έχει δοθεί καθώς επίσης και η ακρίβεια ταξινόμησης.}}{11}{table.4}
+\defcounter {refsection}{0}\relax 
+\contentsline {table}{\numberline {5}{\ignorespaces Απόδοση αλγορίθμων ταξινόμησης ανάλογα με την μέθοδο επίλυσης του προβλήματος της ανισοκατανομής των κλάσεων. Η μετρική που χρησιμοποιήθηκε είναι η AUC.}}{13}{table.5}

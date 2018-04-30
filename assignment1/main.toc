@@ -1,27 +1,27 @@
 \boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {1}Μέρος Α}{5}{section.1}
+\contentsline {section}{\numberline {1}Μέρος Α}{1}{section.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {1.1}Περιγραφή}{5}{subsection.1.1}
+\contentsline {subsection}{\numberline {1.1}Περιγραφή}{1}{subsection.1.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {1.2}Αποτελέσματα}{6}{subsection.1.2}
+\contentsline {subsection}{\numberline {1.2}Αποτελέσματα}{2}{subsection.1.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {1.2.1}Boxplots}{6}{subsubsection.1.2.1}
+\contentsline {subsubsection}{\numberline {1.2.1}Boxplots}{2}{subsubsection.1.2.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {1.2.2}Καμπύλες μάθησης}{6}{subsubsection.1.2.2}
+\contentsline {subsubsection}{\numberline {1.2.2}Καμπύλες μάθησης}{3}{subsubsection.1.2.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {1.2.3}Συγκριτική αξιολόγηση}{6}{subsubsection.1.2.3}
+\contentsline {subsubsection}{\numberline {1.2.3}Συγκριτική αξιολόγηση}{3}{subsubsection.1.2.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {2}Μέρος Β}{9}{section.2}
+\contentsline {section}{\numberline {2}Μέρος Β}{7}{section.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {2.1}Γενικά}{11}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.1}Γενικά}{8}{subsection.2.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {2.2}Αποτέλεσματα}{11}{subsection.2.2}
+\contentsline {subsection}{\numberline {2.2}Αποτέλεσματα}{8}{subsection.2.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3}Μέρος Γ}{12}{section.3}
+\contentsline {section}{\numberline {3}Μέρος Γ}{9}{section.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.1}Προϋποθέσεις}{12}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.1}Μέθοδοι - Πείραμα}{9}{subsection.3.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.2}Δημιουργία PDF κλπ}{12}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.2}Αποτελέσματα}{10}{subsection.3.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {4}Αναφορές}{12}{section.4}
+\contentsline {section}{\numberline {4}Αναφορές}{10}{section.4}
