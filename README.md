@@ -1,3 +1,5 @@
-# TriaGourounakia
+# Πρώτη εργασία για το μάθημα της προηγμένης μηχανικής μάθησης και ανακάλυψης γνώσης
 
-Ena paramythi me nohma
+- Friedman Test
+- Cost classification
+- imbalance datasets
