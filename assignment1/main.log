@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99998 (MiKTeX 2.9.6500 64-bit) (preloaded format=xelatex 2018.4.28)  1 MAY 2018 19:27
+This is XeTeX, Version 3.14159265-2.6-0.99998 (MiKTeX 2.9.6500 64-bit) (preloaded format=xelatex 2018.4.28)  1 MAY 2018 19:55
 entering extended mode
 **./main.tex
 (main.tex
@@ -1500,6 +1500,11 @@ Overfull \hbox (3.93114pt too wide) in paragraph at lines 223--224
 
 File: figs/diagram.png Graphic file (type bmp)
 <figs/diagram.png>
+
+Underfull \hbox (badness 10000) in paragraph at lines 260--264
+
+ []
+
 [10] [11]) [12]
 Overfull \hbox (5.08707pt too wide) in paragraph at lines 131--131
 \TU/LinuxLibertineO(0)/m/it/12 Symposium on Principles of Data Mining and Knowl
@@ -1526,10 +1531,10 @@ Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 133.
 Here is how much of TeX's memory you used:
  31709 strings out of 427839
  575021 string characters out of 3152538
- 974873 words of memory out of 3000000
+ 974784 words of memory out of 3000000
  35415 multiletter control sequences out of 15000+200000
  533422 words of font info for 63 fonts, out of 3000000 for 9000
  1328 hyphenation exceptions out of 8191
- 46i,11n,68p,10437b,4750s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 46i,11n,68p,10437b,4752s stack positions out of 5000i,500n,10000p,200000b,50000s
 
 Output written on main.pdf (14 pages).
