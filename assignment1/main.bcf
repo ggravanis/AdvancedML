@@ -1926,10 +1926,6 @@
     <bcf:citekey order="1">demvsar</bcf:citekey>
     <bcf:citekey order="2">scikit-learn</bcf:citekey>
     <bcf:citekey order="3">JMLR:v18:16-365</bcf:citekey>
-    <bcf:citekey order="4">goossens93</bcf:citekey>
-    <bcf:citekey order="5">Syropoulos</bcf:citekey>
-    <bcf:citekey order="6">JABREF</bcf:citekey>
-    <bcf:citekey order="7">JABREF</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="nty">

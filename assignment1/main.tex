@@ -56,44 +56,12 @@
         identifierstyle=\color{seagreen},
         procnamekeys={def,class}}
 
+\usepackage[backend=bibtex,style=authoryear,natbib=true]{biblatex} % Use the bibtex backend with the authoryear citation style (which resembles APA)
 
-% highly advised by biblatex's authors.
-\usepackage{csquotes}
-% and biblatex itself...
-\usepackage[style=numeric,
-  maxcitenames=3, mincitenames=1,
-  maxbibnames=99, minbibnames=99,
-  urldate=short,
-  defernumbers=true]{biblatex}
-% suppress the "In:" part in journal references
-\renewbibmacro{in:}{}
-% load the bibliography file
-\addbibresource{main.bib}
-% separate the last name with the "&" character from the previous ones
-% instead of "and" (αλλιώς πάει "and" και στα ελληνικά οπότε είναι
-% πρόβλημα)
-\renewcommand*{\finalnamedelim}{ \& }
-% make "et al" appear in italics
-\usepackage{xpatch}
-\xpatchbibmacro{name:andothers}{%
-  \bibstring{andothers}%
-}{%
-  \bibstring[\emph]{andothers}%
-}{}{}
-% All names reversed
-\DeclareNameAlias{default}{last-first}
-\DeclareNameAlias{sortname}{last-first}
-% ημερομηνία προσπέλασης στα ελληνικά στη βιβλιογραφία
-\DeclareFieldFormat{urldate}{%
-  (ημερομηνία προσπέλασης:%
-  \addspace\stripzeros{\thefield{urlday}}\hspace{0.1 mm}/\hspace{0.1 mm}%
-  \stripzeros{\thefield{urlmonth}}\hspace{0.1 mm}/\hspace{0.1 mm}%
-\thefield{urlyear})\isdot}
-% make sure that word wrapping is forced in bibliography and we don't
-% get overfull lines all the time
-\setcounter{biburlnumpenalty}{8000}
-\setcounter{biburllcpenalty}{8000}
-\setcounter{biburlucpenalty}{8000}
+%\bibliography{main}
+%\bibliographystyle{apalike}
+
+\addbibresource{main.bib} % The filename of the bibliography
 %++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 \begin{document}
@@ -158,8 +126,8 @@
 
 %Βιβλιογραφία
 \cleardoublepage
-\phantomsection
-\addcontentsline{toc}{section}{Βιβλιογραφία}
-\printbibliography[title={Βιβλιογραφικές Αναφορές},nottype=misc]
-%\printbibliography[title={Διαδικτυακές Αναφορές},type=misc]
+%\addcontentsline{toc}{section}{References}
+
+\printbibliography[heading=bibintoc]
+
 \end{document}
