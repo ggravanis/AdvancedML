@@ -2,3 +2,7 @@ imblearn
 numpy
 pandas
 scikit-learn
+matplotlib
+nltk
+spacy
+textacy
