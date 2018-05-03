@@ -4,3 +4,4 @@ venv
 *.iml
 **/.env
 __pycache__/
+/data/lexicongit
