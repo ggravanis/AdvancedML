@@ -109,7 +109,7 @@ if __name__ == "__main__":
         scores[name] = temp_dict
 
     df = pd.DataFrame(scores)
-    # df.to_csv(save_path + "scores.csv")
+    df.to_csv(save_path + "scores.csv")
 
     print df
 

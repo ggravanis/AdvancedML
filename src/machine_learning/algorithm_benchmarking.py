@@ -25,6 +25,7 @@ start_time = time()
 load_path = '../../data/part1/'
 save_path = '../../results/part1/'
 
+
 def learning_curve(min_val, max_val, step, lc_seed, lc_model, data_X, data_y):
     train_error = []
     test_error = []
@@ -82,11 +83,12 @@ if __name__ == "__main__":
 
     randomForest_params = {'RandomForest__max_depth': (1, 3, 5, 10),
                            'RandomForest__n_estimators': (50, 100, 150)
-                            }
+                           }
     ensembles = []
 
     ensembles.append(('AdaBoostDT', Pipeline([('Normalizer', Normalizer()),
-                                              ('AdaBoost', AdaBoostClassifier(base_estimator=DecisionTreeClassifier()))]),
+                                              ('AdaBoost',
+                                               AdaBoostClassifier(base_estimator=DecisionTreeClassifier()))]),
                       adaBoost_params))
     ensembles.append(('BaggingDT', Pipeline([('Normalizer', Normalizer()),
                                              ('Bagging', BaggingClassifier(base_estimator=DecisionTreeClassifier()))]),
@@ -139,7 +141,7 @@ if __name__ == "__main__":
             t0 = time()
             grid_search.fit(X_train, y_train)
             df = pd.DataFrame.from_dict(grid_search.cv_results_)
-            df.to_csv(save_path + name +"_"+ d + "_CV_results.csv")
+            df.to_csv(save_path + name + "_" + d + "_CV_results.csv")
 
             y_pred = grid_search.predict(X_test)
             accuracy_temp_results.append(accuracy_score(y_test, y_pred))
@@ -167,7 +169,8 @@ if __name__ == "__main__":
             ensemble_best_results.append(accuracy_score(y_test, y_pred))
 
             batches, train_error, test_error, scores = learning_curve(min_val=10, max_val=90, step=3, lc_seed=seed,
-                                                                  lc_model=grid_search.best_estimator_, data_X=X_train,
+                                                                      lc_model=grid_search.best_estimator_,
+                                                                      data_X=X_train,
                                                                       data_y=y_train)
 
             axes[i, j].plot(batches, train_error)

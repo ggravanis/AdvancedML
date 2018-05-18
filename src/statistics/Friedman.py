@@ -1,6 +1,6 @@
 import pandas as pd
 import math
-
+import matplotlib.pyplot as plt
 
 class Friedman:
 
@@ -22,12 +22,12 @@ class Friedman:
         if p_value not in valid:
             raise ValueError("results: status must be one of %r." % valid)
 
-        self.df = dataframe.set_index('Fold')
+        self.df = dataframe.set_index('Folds')
         self.n, self.k = self.df.shape
 
     def get_ranked_dataframe(self):
 
-        return self.df.rank(axis=1)
+        return self.df.rank(axis=1, ascending=False)
 
     def get_rank_mean_values(self):
         df_rank = self.get_ranked_dataframe()
@@ -72,3 +72,83 @@ class Friedman:
 
         critical_difference = q_a * math.sqrt(self.k * (self.k + 1) / (6.0 * self.n))
         return critical_difference
+
+    def plot_test(self):
+
+        ranked = self.get_ranked_dataframe()
+
+        m_r, n_r = ranked.shape
+        crt_difference = self.get_Critical_Difference()
+        print crt_difference
+        y_height = 1.2
+        x_offset = 3
+        temp = {'X': self.get_rank_mean_values(), 'Names': ranked.keys(), 'y': [y_height for i in range(n_r)]}
+
+        df = pd.DataFrame(temp)
+
+        df = df.sort_values(by='X')
+        df = df.reset_index(drop=True)
+
+        m, n = df.shape
+
+        y_pos = []
+        x_pos = []
+
+        y_left_pos = y_height - 0.5
+        y_right_pos = y_height
+
+        for index, row in df.iterrows():
+            print
+            if row['X'] <= m / 2.0:
+                y_left_pos -= 0.1
+                y_pos.append(y_left_pos)
+                x_pos.append(row['X'] - x_offset)
+            if row['X'] > m / 2.0:
+                y_right_pos -= 0.1
+                y_pos.append(y_right_pos)
+                x_pos.append(row['X'] + x_offset)
+
+        df['y_pos'] = y_pos
+        df['x_pos'] = x_pos
+
+        fig = plt.figure(figsize=(15, 10))
+        plt.scatter(df['X'], df['y'], c='black')
+
+        plt.plot([0, m], [y_height, y_height], 'black')
+        plt.ylim(0, 2)
+        for index1, row in df.iterrows():
+            if row['X'] <= m / 2.0:
+                plt.plot([row['X'], row['X']], [row['y'], row['y_pos']], 'black')
+                plt.plot([row['X'], row['x_pos']], [row['y_pos'], row['y_pos']], 'black')
+
+                plt.annotate(row['Names'] + " (" + str(round(row['X'], 2)) + ")", (row['x_pos'], row['y_pos']),
+                             xytext=(row['x_pos'], row['y_pos'] + 0.01))
+
+            if row['X'] > m / 2.0:
+                plt.plot([row['X'], row['X']], [row['y'], y_height - row['y_pos']], 'black')
+                plt.plot([row['X'], row['x_pos']], [y_height - row['y_pos'], y_height - row['y_pos']], 'black')
+                plt.annotate(row['Names'] + " (" + str(round(row['X'], 2)) + ")",
+                             (row['x_pos'], y_height - row['y_pos']),
+                             xytext=(row['x_pos'] + 0.5, y_height - row['y_pos'] + 0.01))
+
+        # Add Critical Difference plot
+
+        for major_tick in range(m + 1):
+            minor_tick = major_tick + 0.5
+
+            if minor_tick <= m:
+                print minor_tick, m
+                plt.plot([minor_tick, minor_tick], [y_height, y_height + 0.05], color='black')
+
+            plt.plot([major_tick, major_tick], [y_height, y_height + 0.1], color='black')
+            plt.annotate(major_tick, (major_tick, y_height + 0.1), xytext=(major_tick + 0.1, y_height + 0.12))
+
+        plt.plot([m, m - crt_difference], [1.5, 1.5], 'black')
+        plt.plot([m, m], [1.48, 1.52], 'black')
+        plt.plot([m - crt_difference, m - crt_difference], [1.48, 1.52], 'black')
+        plt.annotate("CD = {}".format(round(crt_difference, 2)), (0, 1.5), xytext=(m - 0.5, 1.55))
+
+        plt.gca().invert_xaxis()
+        plt.axis('off')
+
+        return plt
