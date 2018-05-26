@@ -44,8 +44,8 @@ def load_data(file_name):
     return np.nan_to_num(dataset)
 
 
-y_train = load_data('train-labels.csv')
-y_test = load_data('test-labels.csv')
+y_train = load_data('train_labels.csv')
+y_test = load_data('test_labels.csv')
 
 # print y_test[0]
 # le = LabelEncoder()
