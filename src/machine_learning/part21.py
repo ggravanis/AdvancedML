@@ -23,6 +23,8 @@ def binary_to_text(df):
     for index, item in df.iterrows():
         labels = []
         for label_index, value in item.iteritems():
+            if np.isnan(value):
+                continue
             if int(value) == 1:
                 labels.append(label_index)
                 if labels_cumsum.get(label_index) is None:
@@ -33,15 +35,15 @@ def binary_to_text(df):
     return y_labels, labels_cumsum
 
 
-def load_data(filename, size):
+def load_data(filename, m, n):
     load_path = "../../data/DeliciousMIL/"
     data = pd.read_csv(load_path + filename, na_values=0, keep_default_na=True)
     data = pd.DataFrame(data).fillna(0)
     data = data.set_index(['Unnamed: 0'])
-    if size > 0:
-        data = data.iloc[:size, :]
+    if m > 0:
+        data = data.iloc[:m, :n]
     else:
-        data = data.iloc[:, :]
+        data = data.iloc[:, :n]
     return data
 
 
@@ -50,13 +52,14 @@ if __name__ == "__main__":
     # Set the paths
 
     save_path = "../../results/part21/"
-
+    print "Loading the data..."
     # Load the data
-    X_train = load_data('part1_train.csv', 150)
-    X_test = load_data('part1_test.csv', 150)
-    y_train = load_data('train_labels.csv', 150)
-    y_test = load_data('test_labels.csv', 150)
-
+    X_train = load_data('part1_train.csv', 2500, 20) #8250
+    X_test = load_data('part1_test.csv', 1000, 10) # 3980
+    y_train = load_data('train_labels.csv', 2500, 20)
+    y_test = load_data('test_labels.csv', 1000, 20)
+    print "Data loaded."
+    print "creating labeled arrays"
     # create arrays with labels
     y_test, test_distribution = binary_to_text(y_test)
     y_train, train_distribution = binary_to_text(y_train)
@@ -78,18 +81,21 @@ if __name__ == "__main__":
     plt.title("Label distribution \n DeliciousMIL dataset")
     plt.savefig(save_path + 'label_distribution.png')
 
+    print "Data distribution diagram plotted."
+    print "Binarization started..."
     # Binarize the output vector
     mlb = MultiLabelBinarizer()
     y_train = mlb.fit_transform(y_train)
     y_test = mlb.transform(y_test)
-
+    print "classifation started"
     # Define and train the multi-label classifier
-    estimators = [('svm_linear', SVC(kernel='linear')), ("NB",GaussianNB()), ("DT",DecisionTreeClassifier())]
-    for name,estimator in estimators:
+    estimators = [("NB", GaussianNB()), ("DT",DecisionTreeClassifier()), ('svm_linear', SVC(kernel='linear'))]
+    for name, estimator in estimators:
 
-        clf = OneVsRestClassifier(estimator=estimator, n_jobs=5)
-
+        clf = OneVsRestClassifier(estimator=estimator, n_jobs=-1)
+        print "training model..."
         clf.fit(X_train, y_train)
+        print "Model trained."
         predictions = clf.predict(X_test)
 
         my_metrics = metrics.classification_report(y_test, predictions)
