@@ -35,16 +35,62 @@ def binary_to_text(df):
     return y_labels, labels_cumsum
 
 
-def load_data(filename, m, n):
+def load_data(filename):
     load_path = "../../data/DeliciousMIL/"
-    data = pd.read_csv(load_path + filename, na_values=0, keep_default_na=True)
-    data = pd.DataFrame(data).fillna(0)
+    data = pd.read_csv(load_path + filename)
     data = data.set_index(['Unnamed: 0'])
-    if m > 0:
-        data = data.iloc[:m, :n]
-    else:
-        data = data.iloc[:, :n]
     return data
+
+
+def bag_of_words(df):
+    d = {}
+    for row, items in df.iterrows():
+        my_dict = {}
+        for item in items:
+            if np.isnan(item):
+                continue
+            if int(item) in my_dict:
+                my_dict[int(item)] += 1
+            else:
+                my_dict[item] = 1
+
+        d[row] = my_dict
+
+    df = pd.DataFrame.from_dict(d)
+    df = df.transpose()
+    df = pd.DataFrame(df).fillna(0)
+    return df
+
+
+def get_n_most_significant(df, n):
+    temp_dict = {}
+    for index, column in df.items():
+        temp_dict[index] = int(sum(column))
+
+    df = pd.DataFrame(temp_dict, index=[0])
+    df = df.transpose()
+    df = df.reset_index(drop=False)
+    df = df.rename({"index": "label", 0: "value"}, axis='columns')
+
+    # df['value'].plot.kde()
+    # plt.show()
+
+    df.label = df.label.astype(int)
+    df = df.sort_values(by="value", ascending=False)
+    x = []
+    y = []
+    label = []
+    counter = 0
+    for index, item in df.iterrows():
+        x.append(counter)
+        y.append(item['value'])
+        label.append(item['label'])
+        counter += 1
+
+    plt.scatter(x=x, y=y, s=1)
+    plt.show()
+    df = df.head(n)
+    return df['label']
 
 
 if __name__ == "__main__":
@@ -54,12 +100,30 @@ if __name__ == "__main__":
     save_path = "../../results/part21/"
     print "Loading the data..."
     # Load the data
-    X_train = load_data('part1_train.csv', 2500, 20) #8250
-    X_test = load_data('part1_test.csv', 1000, 10) # 3980
-    y_train = load_data('train_labels.csv', 2500, 20)
-    y_test = load_data('test_labels.csv', 1000, 20)
+    X_train = load_data('part1_train.csv')  # 8250
+    X_test = load_data('part1_test.csv')  # 3980
+    y_train = load_data('train_labels.csv')
+    y_test = load_data('test_labels.csv')
     print "Data loaded."
     print "creating labeled arrays"
+
+    X_train = bag_of_words(X_train)
+    X_test = bag_of_words(X_test)
+
+    # from sklearn.feature_extraction.text import TfidfTransformer
+    #
+    # tfidf = TfidfTransformer(norm="l2")
+    # tfidf.fit(X_train)
+    #
+
+    keys = get_n_most_significant(X_train, 2000)
+
+    X_train = X_train[keys]
+    X_test = X_test[keys]
+
+    print X_train.shape
+    print X_test.shape
+
     # create arrays with labels
     y_test, test_distribution = binary_to_text(y_test)
     y_train, train_distribution = binary_to_text(y_train)
@@ -89,7 +153,7 @@ if __name__ == "__main__":
     y_test = mlb.transform(y_test)
     print "classifation started"
     # Define and train the multi-label classifier
-    estimators = [("NB", GaussianNB()), ("DT",DecisionTreeClassifier()), ('svm_linear', SVC(kernel='linear'))]
+    estimators = [("NB", GaussianNB()), ("DT", DecisionTreeClassifier()), ('svm_rbf', SVC(kernel='rbf'))]
     for name, estimator in estimators:
 
         clf = OneVsRestClassifier(estimator=estimator, n_jobs=-1)
@@ -127,8 +191,8 @@ if __name__ == "__main__":
         plt.ylabel('Precision')
         plt.ylim([0.0, 1.05])
         plt.xlim([0.0, 1.0])
-        plt.title(
-            'Average precision score, micro-averaged over all labels: AP={0:0.2f} \n estimator: {0}'.format(average_precision["micro"],name))
+        plt.title('Average precision score, micro-averaged over all labels: AP={0:0.2f} \n estimator: {0}'.format(
+            average_precision["micro"], name))
         plt.savefig(save_path + '{}_average_precision.png'.format(name))
         # plt.show()
 

@@ -5,7 +5,9 @@ import re
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.svm import SVC
 from sklearn.preprocessing import LabelEncoder
+
 from sklearn.multiclass import OneVsOneClassifier
+import matplotlib.pyplot as plt
 
 load_path = '../../data/DeliciousMIL/'
 
@@ -44,38 +46,80 @@ def load_data(file_name):
     return np.nan_to_num(dataset)
 
 
-y_train = load_data('train_labels.csv')
-y_test = load_data('test_labels.csv')
+def parse_data_for_part2(instances, labels):
+    f = open(load_path + instances, 'r')
+    l = open(load_path + labels, 'r')
 
-# print y_test[0]
-# le = LabelEncoder()
-# y_test_enc = le.fit(y_test)
-#
-# print y_test_enc[0]
+    labels = [line for line in l]
 
-X_train = load_data('part1_train.csv')
-X_test = load_data('part1_test.csv')
-#
+    doc_dict = {}
+    doc_count = 0
+    insta_count = 0
+    bag_of_instances = {}
+    for doc in f:
 
-classif = OneVsOneClassifier(SVC(kernel='linear'))
+        label = labels[doc_count].split(" ")
+        label = label[2]
+
+        parsed_line = re.split(r'<\d+>', doc)
+
+        for item in parsed_line:
+            item = item.strip()
+            if item:
+                words = item.split(" ")
+                words = [int(word) for word in words]
+                bag_of_instances[insta_count] = (words, label)
+                insta_count += 1
+
+        # doc_dict["doc_"+str(doc_count)] = bag_of_instances
+        doc_count += 1
+
+    f.close()
+    l.close()
+
+    df = pd.DataFrame.from_dict(bag_of_instances)
+    df = df.transpose()
+
+    return df
 
 
-# classif = OneVsRestClassifier(SVC(kernel='linear'))
-classif.fit(X_train, y_train)
+df = parse_data_for_part2('test-data.dat', 'test-label.dat')
 
-y_pred = classif.predict(X_test)
+df = df.rename(index=str, columns={0: "Instances", 1: "label"})
 
-print y_pred
-# print y_train[0]
-# for item in y_train:
-#     print item[1:]
+from sklearn.cluster import KMeans
 
-# y_test = pd.read_csv(load_path + 'test-label.csv')
-#
-#
-# X_train = pd.read_csv(load_path + 'part1_train.csv')
-# X_test = pd.read_csv(load_path + 'part1_test.csv')
-#
-#
-# X = dataset[:, :-1]
-# y = dataset[:, -1]
+y = df["label"]
+
+X = pd.DataFrame(df['Instances'].values.tolist())
+
+
+
+
+X_merged = []
+
+for index, row in X.iterrows():
+    how_many = 0
+    row_sum = [item for item in row if ~np.isnan(item)]
+
+    print float(sum(row_sum))/float(len(row_sum))
+    X_merged.append(float(sum(row_sum))/float(len(row_sum)))
+
+# X = pd.DataFrame(X).fillna(-1)
+
+labels = KMeans(n_clusters=3).fit_predict(X=X_merged)
+
+# estimators = [('k_means_3', KMeans(n_clusters=3)), ('k_means_8', KMeans(n_clusters=8))]
+# ('k_means_8', KMeans(n_clusters=8)),
+# ('k_means_3', KMeans(n_clusters=8))]
+
+fignum = 1
+# titles = ['3 clusters', '8 clusters']  # , '8 clusters', '3 clusters']
+
+print labels
+
+plt.figure(figsize=(15, 15))
+plt.scatter(X_merged, y, c=labels)
+plt.title("Incorrect Number of Blobs")
+plt.show()
+
