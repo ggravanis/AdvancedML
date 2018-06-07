@@ -71,7 +71,6 @@ def parse_data_for_part2(instances, labels):
                 bag_of_instances[insta_count] = (words, label)
                 insta_count += 1
 
-        # doc_dict["doc_"+str(doc_count)] = bag_of_instances
         doc_count += 1
 
     f.close()
@@ -84,6 +83,8 @@ def parse_data_for_part2(instances, labels):
 
 
 df = parse_data_for_part2('test-data.dat', 'test-label.dat')
+
+print
 
 df = df.rename(index=str, columns={0: "Instances", 1: "label"})
 
