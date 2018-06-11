@@ -1,13 +1,10 @@
 import pandas as pd
 import numpy as np
-import regex
 import re
-from sklearn.multiclass import OneVsRestClassifier
-from sklearn.svm import SVC
-from sklearn.preprocessing import LabelEncoder
-
-from sklearn.multiclass import OneVsOneClassifier
 import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+from sklearn.svm import SVC
+from sklearn.metrics import classification_report
 
 load_path = '../../data/DeliciousMIL/'
 
@@ -51,11 +48,10 @@ def parse_data_for_part2(instances, labels):
     l = open(load_path + labels, 'r')
 
     labels = [line for line in l]
-
-    doc_dict = {}
     doc_count = 0
     insta_count = 0
     bag_of_instances = {}
+
     for doc in f:
 
         label = labels[doc_count].split(" ")
@@ -82,45 +78,70 @@ def parse_data_for_part2(instances, labels):
     return df
 
 
-df = parse_data_for_part2('test-data.dat', 'test-label.dat')
+def kmeans_approach(df, k=20, size=1000):
+    df = df.rename(index=str, columns={0: "Instances", 1: "label"})
+    df = pd.DataFrame(df)
 
-print
+    reform_dict = {}
+    for index, item in df.iterrows():
+        print index
+        temp_dict = {}
+        for word in item["Instances"]:
+            if int(word) in temp_dict:
+                temp_dict[int(word)] += 1
+            else:
+                temp_dict[int(word)] = 1
 
-df = df.rename(index=str, columns={0: "Instances", 1: "label"})
+        temp_dict['label'] = item['label']
 
-from sklearn.cluster import KMeans
+        reform_dict[int(index)] = temp_dict
+        if int(index) == size:
+            break
 
-y = df["label"]
+    test_df = pd.DataFrame(reform_dict)
+    test_df = test_df.fillna(0)
+    test_df = test_df.transpose()
 
-X = pd.DataFrame(df['Instances'].values.tolist())
+    test_df = test_df.iloc[:, :]
+    test_df = np.array(test_df)
+    X = test_df[:, :-1]
+    y = test_df[:, -1]
+
+    labels = KMeans(n_clusters=k).fit_predict(X=X)
+
+    final_dict = {}
+    final_idx = 0
+    for label in labels:
+        temp_dict = {label: 1, 'target': y[final_idx]}
+        final_dict[final_idx] = temp_dict
+        final_idx += 1
+
+    final = pd.DataFrame(final_dict)
+    final = final.fillna(0)
+    final = final.transpose()
+
+    final = final.iloc[:, :]
+    final = np.array(final)
+    X = final[:, :-1]
+    y = final[:, -1]
+
+    return X, y
 
 
+test_df = parse_data_for_part2('test-data.dat', 'test-label.dat')
+print "test set parsed"
+train_df = parse_data_for_part2('train-data.dat', 'train-label.dat')
+print "train set parsed"
 
+X_train, y_train = kmeans_approach(train_df, k=20, size=1500)
+print "train set transformed"
 
-X_merged = []
+X_test, y_test = kmeans_approach(test_df, k=20, size=500)
+print "test set transformed"
 
-for index, row in X.iterrows():
-    how_many = 0
-    row_sum = [item for item in row if ~np.isnan(item)]
+clf = SVC(kernel='linear', C=100)
 
-    print float(sum(row_sum))/float(len(row_sum))
-    X_merged.append(float(sum(row_sum))/float(len(row_sum)))
+clf.fit(X_train, y_train)
+y_pred = clf.predict(X_test)
 
-# X = pd.DataFrame(X).fillna(-1)
-
-labels = KMeans(n_clusters=3).fit_predict(X=X_merged)
-
-# estimators = [('k_means_3', KMeans(n_clusters=3)), ('k_means_8', KMeans(n_clusters=8))]
-# ('k_means_8', KMeans(n_clusters=8)),
-# ('k_means_3', KMeans(n_clusters=8))]
-
-fignum = 1
-# titles = ['3 clusters', '8 clusters']  # , '8 clusters', '3 clusters']
-
-print labels
-
-plt.figure(figsize=(15, 15))
-plt.scatter(X_merged, y, c=labels)
-plt.title("Incorrect Number of Blobs")
-plt.show()
-
+print classification_report(y_true=y_test, y_pred=y_pred)

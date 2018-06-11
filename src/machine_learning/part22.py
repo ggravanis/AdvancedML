@@ -4,7 +4,8 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.multiclass import OneVsRestClassifier
+from sklearn.cluster import KMeans
+
 from sklearn.svm import SVC
 from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn import metrics
@@ -104,3 +105,4 @@ if __name__ == "__main__":
     y = y_test['reference']
     X = np.array(X)
     y = np.array(y)
+    print

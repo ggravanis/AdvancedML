@@ -37,18 +37,35 @@ df_m, df_n = df.shape
 print df_m, df_n
 idf = {}
 count_dict = {}
-for key in range(0, 8520):
-    for row in df.iterrows():
-        doc = [int(i) for i in row[1] if str(i).lower != "nan"]
-        print
-        if key in doc and key in count_dict:
-            print "bingo"
-            count_dict[key] += 1
-            idf[key] = math.log(float(df_m) / count_dict[key])
-            continue
-        else:
-            count_dict[key] = 0
-            print "HEdaya"
+collection = {}
 
-idf_df = pd.DataFrame.from_dict(idf)
+for index, document in df.iterrows():
+    # print document
+    for word in range(8520):
+        print index, word
+        if word in count_dict:
+            if str(word) in set(document):
+                count_dict[word] += 1
+                idf[word] = float(df_m) / count_dict[word]
+        else:
+            count_dict[word] = 0
+    collection[index] = idf
+    if index == 1:
+        break
+
+collection_df = pd.DataFrame.from_dict(collection)
+collection_df = collection_df.transpose()
+print collection_df
 print
+
+a = {1: [1, 2, 3], 2: [4, 5, 6]}
+b = {1: [0, 1, 0]}
+
+a_df = pd.DataFrame.from_dict(a)
+b_df = pd.DataFrame.from_dict(b)
+
+c_df = a_df.mul(b_df, axis=0)
+
+print a_df
+print b_df
+print c_df
