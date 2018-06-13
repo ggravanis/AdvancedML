@@ -4,6 +4,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.tight_bbox import adjust_bbox
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split
@@ -115,7 +116,7 @@ if __name__ == "__main__":
     X = np.array(X)
     y = np.array(y)
 
-    fig, axes = plt.subplots(ncols=2, nrows=5, sharey='all', sharex='row', figsize=(10, 22))
+    fig, axes = plt.subplots(ncols=5, nrows=2, sharey='all', sharex='row', figsize=(14, 8))
     fig.suptitle("Learning Curves")
     fig.text(0.5, 0.04, 'Iteration', ha='center')
     fig.text(0.04, 0.5, 'Accuracy %', va='center', rotation='vertical')
@@ -123,15 +124,13 @@ if __name__ == "__main__":
     fig.subplots_adjust(top=0.95, left=0.11, bottom=0.08)
 
     for k in range(0, 10):
-        if k % 2 == 0:
-            j = 0
-        else:
-            j = 1
-        if k == 1:
+        if k < 5:
+            j = k
             m = 0
         else:
-            m = k / 2
-        print m
+            j = k-5
+            m = 1
+
         # split test set in two sets equally distributed
         X_test, X_pool, y_test, y_pool = train_test_split(X, y, test_size=0.50, random_state=7)
 
@@ -231,8 +230,8 @@ if __name__ == "__main__":
 
         plt.setp([a.get_xticklabels() for a in axes[0, :]], visible=False)
         plt.setp([a.get_yticklabels() for a in axes[:, 1]], visible=False)
-        fig.legend(("Uncertainty Sampling", "Random Sampling"), loc='upper right')
-        fig.savefig(save_path + 'ALearningCurves.png', bbox_inches='tight')
+        fig.legend(("Uncertainty Sampling", "Random Sampling"))
+        fig.savefig(save_path + 'ALearningCurves.png')
 
         # plt.figure()
         # plt.plot(us_acc, label="Uncertainty Sampling")

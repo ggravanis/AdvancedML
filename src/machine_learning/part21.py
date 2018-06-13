@@ -7,14 +7,17 @@ import matplotlib.pyplot as plt
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.svm import SVC
 from sklearn.preprocessing import MultiLabelBinarizer
-from sklearn import metrics
 from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
 import time
+from sklearn import metrics
 from sklearn.metrics import precision_recall_curve, average_precision_score, hamming_loss, \
-    label_ranking_average_precision_score
+    label_ranking_average_precision_score, f1_score
 
 from itertools import cycle
+from sklearn.metrics import jaccard_similarity_score
+from sklearn.multioutput import ClassifierChain
+from sklearn.linear_model import LogisticRegression
 
 
 def binary_to_text(df):
@@ -93,6 +96,78 @@ def get_n_most_significant(df, n):
     return df['label']
 
 
+def chain(model, est_name, X_train_chain, X_test_chain, y_train_chain, y_test_chain):
+    print "I am in chain"
+    Y_pred_ovr = model.predict(X_test_chain)
+    print "predict ok"
+
+    ovr_f1_score = f1_score(y_test_chain, Y_pred_ovr, average='macro')
+    print "predict ok"
+
+    # Fit an ensemble of logistic regression classifier chains and take the
+    # take the average prediction of all the chains.
+
+    chains = [ClassifierChain(model, order='random', random_state=i)
+              for i in range(20)]
+    for chain in chains:
+        print
+        chain.fit(X_train_chain, y_train_chain)
+
+    Y_pred_chains = np.array([chain.predict(X_test) for chain in
+                              chains])
+
+    chain_f1_scores = [f1_score(y_test_chain, Y_pred_chain >= .5, average='macro')
+                       for Y_pred_chain in Y_pred_chains]
+
+    Y_pred_ensemble = Y_pred_chains.mean(axis=0)
+
+    ensemble_f1_score = f1_score(y_test_chain, Y_pred_ensemble >= .5, average='macro')
+
+    model_scores = [ovr_f1_score] + chain_f1_scores
+    model_scores.append(ensemble_f1_score)
+
+    model_names = ('Independent',
+                   'Chain 1',
+                   'Chain 2',
+                   'Chain 3',
+                   'Chain 4',
+                   'Chain 5',
+                   'Chain 6',
+                   'Chain 7',
+                   'Chain 8',
+                   'Chain 9',
+                   'Chain 10',
+                   'Chain 11',
+                   'Chain 12',
+                   'Chain 13',
+                   'Chain 14',
+                   'Chain 15',
+                   'Chain 16',
+                   'Chain 17',
+                   'Chain 18',
+                   'Chain 19',
+                   'Chain 20',
+                   'Ensemble')
+
+    x_pos = np.arange(len(model_names))
+
+    # Plot the f-scores for the independent model, each of the
+    # chains, and the ensemble (note that the vertical axis on this plot does
+    # not begin at 0).
+
+    fig, ax = plt.subplots(figsize=(7, 4))
+    ax.grid(True)
+    ax.set_title('Classifier Chain Ensemble Performance Comparison \n with {} as estimator'.format(name))
+    ax.set_xticks(x_pos)
+    ax.set_xticklabels(model_names, rotation='vertical')
+    ax.set_ylabel('macro averaged F-score')
+    ax.set_ylim([min(model_scores) * .9, max(model_scores) * 1.1])
+    colors = ['r'] + ['b'] * len(chain_f1_scores) + ['g']
+    ax.bar(x_pos, model_scores, alpha=0.5, color=colors)
+    plt.tight_layout()
+    plt.show()
+
+
 if __name__ == "__main__":
 
     # Set the paths
@@ -110,13 +185,7 @@ if __name__ == "__main__":
     X_train = bag_of_words(X_train)
     X_test = bag_of_words(X_test)
 
-    # from sklearn.feature_extraction.text import TfidfTransformer
-    #
-    # tfidf = TfidfTransformer(norm="l2")
-    # tfidf.fit(X_train)
-    #
-
-    keys = get_n_most_significant(X_train, 2000)
+    keys = get_n_most_significant(X_train, 1500)
 
     X_train = X_train[keys]
     X_test = X_test[keys]
@@ -142,16 +211,19 @@ if __name__ == "__main__":
     p2 = plt.bar(ind, labels_test.values, bottom=labels_train.values)
     plt.xticks(ind, labels_test.keys(), rotation='vertical')
     plt.legend((p1[0], p2[0]), ('Train', 'Test'))
+    plt.ylabel("Occurrences")
     plt.title("Label distribution \n DeliciousMIL dataset")
     plt.savefig(save_path + 'label_distribution.png')
 
     print "Data distribution diagram plotted."
     print "Binarization started..."
+
     # Binarize the output vector
     mlb = MultiLabelBinarizer()
     y_train = mlb.fit_transform(y_train)
     y_test = mlb.transform(y_test)
     print "classifation started"
+
     # Define and train the multi-label classifier
     estimators = [("NB", GaussianNB()), ("DT", DecisionTreeClassifier()), ('svm_rbf', SVC(kernel='rbf'))]
     for name, estimator in estimators:
@@ -161,7 +233,8 @@ if __name__ == "__main__":
         clf.fit(X_train, y_train)
         print "Model trained."
         predictions = clf.predict(X_test)
-
+        chain(model=clf, est_name=name, X_train_chain=X_train, X_test_chain=X_test, y_train_chain=y_train,
+              y_test_chain=y_test)
         my_metrics = metrics.classification_report(y_test, predictions)
         print my_metrics
         with open(save_path + "{} classification_report.txt".format(name), "w") as text_file:
@@ -170,7 +243,7 @@ if __name__ == "__main__":
         print "Hamming loss", hamming_loss(y_true=y_test, y_pred=predictions)
         print "Ranking", label_ranking_average_precision_score(y_true=y_test, y_score=predictions)
 
-        # For each label
+        # Calculate classification results for each label
         precision = {}
         recall = {}
         average_precision = {}

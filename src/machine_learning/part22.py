@@ -1,108 +1,166 @@
-#!/usr/bin/env python
-# coding: utf8
-
 import pandas as pd
 import numpy as np
+import re
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
-
 from sklearn.svm import SVC
-from sklearn.preprocessing import MultiLabelBinarizer
-from sklearn import metrics
+from sklearn.metrics import classification_report, accuracy_score, confusion_matrix
 from sklearn.naive_bayes import GaussianNB
-import time
+from sklearn.tree import DecisionTreeClassifier
+
+load_path = '../../data/DeliciousMIL/'
 
 
-def binary_to_text(df):
-    y_labels = []
-    labels_cumsum = {}
-    for index, item in df.iterrows():
-        labels = []
-        for label_index, value in item.iteritems():
-            if np.isnan(value):
-                continue
-            if int(value) == 1:
-                labels.append(label_index)
-                if labels_cumsum.get(label_index) is None:
-                    labels_cumsum[label_index] = 0
-                else:
-                    labels_cumsum[label_index] = labels_cumsum.get(label_index) + 1
-        y_labels.append(labels)
-    return y_labels, labels_cumsum
+def parse_data_for_part1(file_name):
+    f = open(load_path + file_name, 'r')
 
+    count = 0
+    temp_dict = {}
+    for line in f:
+        parsed_line = re.sub(r'<\d+>', '', line)
+        parsed_line = parsed_line.strip()
+        temp_arr = parsed_line.split(' ')
+        temp_arr = filter(None, temp_arr)
+        temp_dict[count] = temp_arr
+        count += 1
+    f.close()
 
-def load_data(filename):
-    load_path = "../../data/DeliciousMIL/"
-    data = pd.read_csv(load_path + filename)
-    data = data.set_index(['Unnamed: 0'])
-    return data
-
-
-def bag_of_words(df):
-    d = {}
-    for row, items in df.iterrows():
-        my_dict = {}
-        for item in items:
-            if np.isnan(item):
-                continue
-            if int(item) in my_dict:
-                my_dict[int(item)] += 1
-            else:
-                my_dict[item] = 1
-
-        d[row] = my_dict
-
-    df = pd.DataFrame.from_dict(d)
+    df = pd.DataFrame(dict([(k, pd.Series(v)) for k, v in temp_dict.iteritems()]))
     df = df.transpose()
-    df = pd.DataFrame(df).fillna(0)
+
     return df
 
 
-def get_n_most_significant(df, n):
-    temp_dict = {}
-    for index, column in df.items():
-        temp_dict[index] = int(sum(column))
+def parse_labels(file_name):
+    pl_df = pd.read_csv(load_path + file_name, header=0, sep=' ')
+    pl_df = pd.DataFrame(pl_df)
 
-    df = pd.DataFrame(temp_dict, index=[0])
+    return pl_df
+
+
+def load_data(file_name):
+    dataset = pd.read_csv(load_path + file_name, na_values=0)
+    dataset = dataset.iloc[:, 1:]
+    dataset = np.array(dataset)
+    return np.nan_to_num(dataset)
+
+
+def parse_data_for_part2(instances, labels):
+    f = open(load_path + instances, 'r')
+    l = open(load_path + labels, 'r')
+
+    labels = [line for line in l]
+    doc_count = 0
+    insta_count = 0
+    bag_of_instances = {}
+
+    for doc in f:
+
+        label = labels[doc_count].split(" ")
+        label = label[2] # assign reference label to target array
+
+        parsed_line = re.split(r'<\d+>', doc)
+
+        for item in parsed_line:
+            item = item.strip()
+            if item:
+                words = item.split(" ")
+                words = [int(word) for word in words]
+                bag_of_instances[insta_count] = (words, label)
+                insta_count += 1
+
+        doc_count += 1
+
+    f.close()
+    l.close()
+
+    df = pd.DataFrame.from_dict(bag_of_instances)
     df = df.transpose()
-    df = df.reset_index(drop=False)
-    df = df.rename({"index": "label", 0: "value"}, axis='columns')
 
-    df.label = df.label.astype(int)
-    df = df.sort_values(by="value", ascending=False)
-    x = []
-    y = []
-    label = []
-    counter = 0
+    return df
+
+
+def kmeans_approach(df, k=20, size=1000):
+    df = df.rename(index=str, columns={0: "Instances", 1: "label"})
+    df = pd.DataFrame(df)
+
+    reform_dict = {}
     for index, item in df.iterrows():
-        x.append(counter)
-        y.append(item['value'])
-        label.append(item['label'])
-        counter += 1
+        print index
+        temp_dict = {}
+        for word in item["Instances"]:
+            if int(word) in temp_dict:
+                temp_dict[int(word)] += 1
+            else:
+                temp_dict[int(word)] = 1
 
-    plt.scatter(x=x, y=y, s=1)
-    plt.show()
-    df = df.head(n)
-    return df['label']
+        temp_dict['label'] = item['label']
+
+        reform_dict[int(index)] = temp_dict
+        if int(index) == size:
+            break
+
+    test_df = pd.DataFrame(reform_dict)
+    test_df = test_df.fillna(0)
+    test_df = test_df.transpose()
+
+    test_df = test_df.iloc[:, :]
+    test_df = np.array(test_df)
+    X = test_df[:, :-1]
+    y = test_df[:, -1]
+
+    labels = KMeans(n_clusters=k).fit_predict(X=X)
+
+    final_dict = {}
+    final_idx = 0
+    for label in labels:
+        temp_dict = {label: 1, 'target': y[final_idx]}
+        final_dict[final_idx] = temp_dict
+        final_idx += 1
+
+    final = pd.DataFrame(final_dict)
+    final = final.fillna(0)
+    final = final.transpose()
+
+    final = final.iloc[:, :]
+    final = np.array(final)
+    X = final[:, :-1]
+    y = final[:, -1]
+
+    return X, y
 
 
-if __name__ == "__main__":
-    # Set the paths
-    save_path = "../../results/part22/"
-    print "Loading the data..."
-    # Load the data
+test_df = parse_data_for_part2('test-data.dat', 'test-label.dat')
+print "test set parsed"
+train_df = parse_data_for_part2('train-data.dat', 'train-label.dat')
+print "train set parsed"
 
-    X_test = load_data('part1_test.csv')  # 3980
+X_train, y_train = kmeans_approach(train_df, k=20, size=1500)
+print "train set transformed"
 
-    y_test = load_data('test_labels.csv')
-    print "Data loaded."
-    print "creating labeled arrays"
+X_test, y_test = kmeans_approach(test_df, k=20, size=500)
+print "test set transformed"
 
-    X = bag_of_words(X_test)
+results = {}
+estimators = [("NB", GaussianNB()), ('SVM', SVC(kernel='linear', C=1, gamma=0.1)), ("DT", DecisionTreeClassifier())]
 
-    keys = get_n_most_significant(X, 3500)
-    X = X[keys]
-    y = y_test['reference']
-    X = np.array(X)
-    y = np.array(y)
-    print
+for name, estimator in estimators:
+
+    estimator = estimator.fit(X_train, y_train)
+    y_pred = estimator.predict(X_test)
+    print classification_report(y_true=y_test, y_pred=y_pred)
+    print confusion_matrix(y_true=y_test, y_pred=y_pred)
+    accur = accuracy_score(y_true=y_test, y_pred=y_pred)
+    print "Accuracy: ", accur
+    results[name] = accur
+
+colors = ["red", "green", "blue"]
+plt.title("Algorithm performance in a bag of instances problem")
+plt.ylabel("Accuracy %")
+plt.bar(range(len(results)), list(results.values()), align='center', color=colors)
+plt.xticks(range(len(results)), list(results.keys()))
+plt.show()
+
+# plt.figure()
+
+

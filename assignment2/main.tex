@@ -26,6 +26,9 @@
 \usepackage{unicode-math}
 % clickable references and URLs
 \usepackage[colorlinks,allcolors=black]{hyperref}
+\usepackage[export]{adjustbox}
+\usepackage{multirow}
+\usepackage[table,xcdraw]{xcolor}
 %Ψάξε να βρεις τα γραφήματα και εδώ:
 \graphicspath{{figs/}}
 % fixed width tables with alignment setting
@@ -35,7 +38,7 @@
 \newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 
 \usepackage{multirow}
-
+\usepackage[linesnumbered,ruled]{algorithm2e}
 \usepackage{color}
 % listings package for colored code listings
 \usepackage[procnames]{listings}

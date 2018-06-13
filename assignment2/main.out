@@ -2,15 +2,13 @@
 \BOOKMARK [2][-]{subsection.1.1}{Σύνολο Δεδομένων}{section.1}% 2
 \BOOKMARK [1][-]{section.2}{Μέρος Α}{}% 3
 \BOOKMARK [2][-]{subsection.2.1}{Προεπεξεργασία δεδομένων}{section.2}% 4
-\BOOKMARK [2][-]{subsection.2.2}{Αποτελέσματα}{section.2}% 5
-\BOOKMARK [3][-]{subsubsection.2.2.1}{Boxplots}{subsection.2.2}% 6
-\BOOKMARK [3][-]{subsubsection.2.2.2}{Καμπύλες μάθησης}{subsection.2.2}% 7
-\BOOKMARK [3][-]{subsubsection.2.2.3}{Συγκριτική αξιολόγηση - Friedman test}{subsection.2.2}% 8
-\BOOKMARK [1][-]{section.3}{Μέρος Β}{}% 9
-\BOOKMARK [2][-]{subsection.3.1}{Γενικά}{section.3}% 10
-\BOOKMARK [2][-]{subsection.3.2}{Αποτέλεσματα}{section.3}% 11
-\BOOKMARK [1][-]{section.4}{Μέρος Γ}{}% 12
-\BOOKMARK [2][-]{subsection.4.1}{Μέθοδοι - Πείραμα}{section.4}% 13
-\BOOKMARK [2][-]{subsection.4.2}{Αποτελέσματα}{section.4}% 14
-\BOOKMARK [1][-]{section.5}{Τεχνικά}{}% 15
-\BOOKMARK [1][-]{section*.2}{References}{}% 16
+\BOOKMARK [2][-]{subsection.2.2}{Πειραματική Διαδικασία}{section.2}% 5
+\BOOKMARK [2][-]{subsection.2.3}{Αποτελέσματα}{section.2}% 6
+\BOOKMARK [1][-]{section.3}{Μέρος Β}{}% 7
+\BOOKMARK [2][-]{subsection.3.1}{Μετασχηματισμός Δεδομένων}{section.3}% 8
+\BOOKMARK [2][-]{subsection.3.2}{Αποτέλεσματα}{section.3}% 9
+\BOOKMARK [1][-]{section.4}{Μέρος Γ}{}% 10
+\BOOKMARK [2][-]{subsection.4.1}{Περιγραφή Πειράματος}{section.4}% 11
+\BOOKMARK [2][-]{subsection.4.2}{Αποτελέσματα}{section.4}% 12
+\BOOKMARK [1][-]{section.5}{Τεχνικά}{}% 13
+\BOOKMARK [1][-]{section*.2}{References}{}% 14
