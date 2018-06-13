@@ -11,6 +11,19 @@ from sklearn.tree import DecisionTreeClassifier
 load_path = '../../data/DeliciousMIL/'
 
 
+def find(key, dictionary):
+    for k, v in dictionary.iteritems():
+        if k == key:
+            yield v
+        elif isinstance(v, dict):
+            for result in find(key, v):
+                yield result
+        elif isinstance(v, list):
+            for d in v:
+                for result in find(key, d):
+                    yield result
+
+
 def parse_data_for_part1(file_name):
     f = open(load_path + file_name, 'r')
 
@@ -45,7 +58,7 @@ def load_data(file_name):
     return np.nan_to_num(dataset)
 
 
-def parse_data_for_part2(instances, labels):
+def parse_data_for_part2(instances, labels, size):
     f = open(load_path + instances, 'r')
     l = open(load_path + labels, 'r')
 
@@ -57,7 +70,7 @@ def parse_data_for_part2(instances, labels):
     for doc in f:
 
         label = labels[doc_count].split(" ")
-        label = label[2] # assign reference label to target array
+        label = label[2]  # assign reference label to target array
 
         parsed_line = re.split(r'<\d+>', doc)
 
@@ -66,8 +79,11 @@ def parse_data_for_part2(instances, labels):
             if item:
                 words = item.split(" ")
                 words = [int(word) for word in words]
-                bag_of_instances[insta_count] = (words, label)
+                bag_of_instances[insta_count] = (doc_count, words, label)
                 insta_count += 1
+
+        if doc_count == size:
+            break
 
         doc_count += 1
 
@@ -81,7 +97,7 @@ def parse_data_for_part2(instances, labels):
 
 
 def kmeans_approach(df, k=20, size=1000):
-    df = df.rename(index=str, columns={0: "Instances", 1: "label"})
+    df = df.rename(index=str, columns={0: "Bag", 1: "Instances", 2: "label"})
     df = pd.DataFrame(df)
 
     reform_dict = {}
@@ -95,28 +111,59 @@ def kmeans_approach(df, k=20, size=1000):
                 temp_dict[int(word)] = 1
 
         temp_dict['label'] = item['label']
-
+        temp_dict['bag'] = item["Bag"]
         reform_dict[int(index)] = temp_dict
-        if int(index) == size:
-            break
+        # if int(index) == size:
+        #     break
 
     test_df = pd.DataFrame(reform_dict)
     test_df = test_df.fillna(0)
     test_df = test_df.transpose()
 
-    test_df = test_df.iloc[:, :]
-    test_df = np.array(test_df)
-    X = test_df[:, :-1]
-    y = test_df[:, -1]
+    test_arr = test_df.iloc[:, :]
+    test_arr = np.array(test_arr)
+    X = test_arr[:, :-2]
+    y = test_arr[:, -1]
 
     labels = KMeans(n_clusters=k).fit_predict(X=X)
 
     final_dict = {}
     final_idx = 0
+
+    bags = test_df["bag"]
+    annotation = test_df["label"]
+
     for label in labels:
-        temp_dict = {label: 1, 'target': y[final_idx]}
-        final_dict[final_idx] = temp_dict
-        final_idx += 1
+
+        check = list(find('bag' + str(bags[final_idx]), final_dict))
+
+        if check:
+        # if 'bag' + str(bags[final_idx]) in check:
+            try:
+                label_dict[label] += 1
+                # final_dict['bag'+ str(bags[final_idx])] = label_dict
+                label_dict["class"] = annotation[final_idx]
+                final_dict['bag' + str(bags[final_idx])].update(label_dict)
+
+                final_idx += 1
+            except:
+                print ('bag' + str(bags[final_idx]))
+                print label
+        else:
+            label_dict = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0, 11: 0, 12: 0, 13: 0, 14: 0,
+                          15: 0, 16: 0, 17: 0, 18: 0, 19: 0, 'class': 0}
+            try:
+                label_dict[label] += 1
+                label_dict["class"] = annotation[final_idx]
+                final_dict['bag' + str(bags[final_idx])] = label_dict
+
+                # temp_dict = {label: 1, 'target': y[final_idx]}
+                # final_dict[final_idx] = temp_dict
+                final_idx += 1
+
+            except:
+                print ('bag' + str(bags[final_idx]))
+                print label
 
     final = pd.DataFrame(final_dict)
     final = final.fillna(0)
@@ -130,22 +177,21 @@ def kmeans_approach(df, k=20, size=1000):
     return X, y
 
 
-test_df = parse_data_for_part2('test-data.dat', 'test-label.dat')
+test_df = parse_data_for_part2('test-data.dat', 'test-label.dat', 1000)
 print "test set parsed"
-train_df = parse_data_for_part2('train-data.dat', 'train-label.dat')
+train_df = parse_data_for_part2('train-data.dat', 'train-label.dat', 3000)
 print "train set parsed"
 
-X_train, y_train = kmeans_approach(train_df, k=20, size=1500)
+X_train, y_train = kmeans_approach(train_df, k=20, size=100)
 print "train set transformed"
 
-X_test, y_test = kmeans_approach(test_df, k=20, size=500)
+X_test, y_test = kmeans_approach(test_df, k=20, size=100)
 print "test set transformed"
 
 results = {}
 estimators = [("NB", GaussianNB()), ('SVM', SVC(kernel='linear', C=1, gamma=0.1)), ("DT", DecisionTreeClassifier())]
 
 for name, estimator in estimators:
-
     estimator = estimator.fit(X_train, y_train)
     y_pred = estimator.predict(X_test)
     print classification_report(y_true=y_test, y_pred=y_pred)
@@ -162,5 +208,3 @@ plt.xticks(range(len(results)), list(results.keys()))
 plt.show()
 
 # plt.figure()
-
-
