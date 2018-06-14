@@ -8,22 +8,22 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {2.1}Προεπεξεργασία δεδομένων}{2}{subsection.2.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {2.2}Πειραματική Διαδικασία}{2}{subsection.2.2}
+\contentsline {subsection}{\numberline {2.2}Πειραματική Διαδικασία}{4}{subsection.2.2}
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {2.3}Αποτελέσματα}{4}{subsection.2.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3}Μέρος Β}{9}{section.3}
+\contentsline {section}{\numberline {3}Μέρος Β}{6}{section.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.1}Μετασχηματισμός Δεδομένων}{9}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.1}Μετασχηματισμός Δεδομένων}{6}{subsection.3.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.2}Αποτέλεσματα}{9}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.2}Αποτέλεσματα}{10}{subsection.3.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {4}Μέρος Γ}{10}{section.4}
+\contentsline {section}{\numberline {4}Μέρος Γ}{11}{section.4}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {4.1}Περιγραφή Πειράματος}{10}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.1}Περιγραφή Πειράματος}{11}{subsection.4.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {4.2}Αποτελέσματα}{10}{subsection.4.2}
+\contentsline {subsection}{\numberline {4.2}Αποτελέσματα}{11}{subsection.4.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {5}Τεχνικά}{11}{section.5}
+\contentsline {section}{\numberline {5}Τεχνικά}{12}{section.5}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{References}{12}{section*.2}
+\contentsline {section}{References}{13}{section*.2}

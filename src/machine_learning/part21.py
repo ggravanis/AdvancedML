@@ -90,6 +90,9 @@ def get_n_most_significant(df, n):
         label.append(item['label'])
         counter += 1
 
+    plt.title("Word Frequency Distribution")
+    plt.ylabel("Frequency")
+    plt.xlabel("Words")
     plt.scatter(x=x, y=y, s=1)
     plt.show()
     df = df.head(n)
