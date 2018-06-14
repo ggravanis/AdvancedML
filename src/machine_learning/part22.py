@@ -7,6 +7,8 @@ from sklearn.svm import SVC
 from sklearn.metrics import classification_report, accuracy_score, confusion_matrix
 from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
+import sys
+import time
 
 load_path = '../../data/DeliciousMIL/'
 
@@ -97,12 +99,13 @@ def parse_data_for_part2(instances, labels, size):
 
 
 def kmeans_approach(df, k=20, size=1000):
+
     df = df.rename(index=str, columns={0: "Bag", 1: "Instances", 2: "label"})
     df = pd.DataFrame(df)
 
     reform_dict = {}
     for index, item in df.iterrows():
-        print index
+
         temp_dict = {}
         for word in item["Instances"]:
             if int(word) in temp_dict:
@@ -116,6 +119,7 @@ def kmeans_approach(df, k=20, size=1000):
         # if int(index) == size:
         #     break
 
+    print "Creating inner dataframe"
     test_df = pd.DataFrame(reform_dict)
     test_df = test_df.fillna(0)
     test_df = test_df.transpose()
@@ -125,7 +129,10 @@ def kmeans_approach(df, k=20, size=1000):
     X = test_arr[:, :-2]
     y = test_arr[:, -1]
 
-    labels = KMeans(n_clusters=k).fit_predict(X=X)
+    print "Fitting Kmeans"
+    labels = KMeans(n_clusters=k, n_jobs=7).fit_predict(X=X)
+    print "Kmeans fitted."
+    print "Regather as bags."
 
     final_dict = {}
     final_idx = 0
@@ -138,33 +145,24 @@ def kmeans_approach(df, k=20, size=1000):
         check = list(find('bag' + str(bags[final_idx]), final_dict))
 
         if check:
-        # if 'bag' + str(bags[final_idx]) in check:
-            try:
-                label_dict[label] += 1
-                # final_dict['bag'+ str(bags[final_idx])] = label_dict
-                label_dict["class"] = annotation[final_idx]
-                final_dict['bag' + str(bags[final_idx])].update(label_dict)
+            # if 'bag' + str(bags[final_idx]) in check:
+            label_dict[label] += 1
+            # final_dict['bag'+ str(bags[final_idx])] = label_dict
+            label_dict["class"] = annotation[final_idx]
+            final_dict['bag' + str(bags[final_idx])].update(label_dict)
 
-                final_idx += 1
-            except:
-                print ('bag' + str(bags[final_idx]))
-                print label
+            final_idx += 1
         else:
-            label_dict = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0, 11: 0, 12: 0, 13: 0, 14: 0,
-                          15: 0, 16: 0, 17: 0, 18: 0, 19: 0, 'class': 0}
-            try:
-                label_dict[label] += 1
-                label_dict["class"] = annotation[final_idx]
-                final_dict['bag' + str(bags[final_idx])] = label_dict
+            label_dict = {}
+            for i in range(k):
+                label_dict[i] = 0
+            label_dict['class'] = 0
+            label_dict[label] += 1
+            label_dict["class"] = annotation[final_idx]
+            final_dict['bag' + str(bags[final_idx])] = label_dict
+            final_idx += 1
 
-                # temp_dict = {label: 1, 'target': y[final_idx]}
-                # final_dict[final_idx] = temp_dict
-                final_idx += 1
-
-            except:
-                print ('bag' + str(bags[final_idx]))
-                print label
-
+    print "Regathering finished"
     final = pd.DataFrame(final_dict)
     final = final.fillna(0)
     final = final.transpose()
@@ -177,34 +175,36 @@ def kmeans_approach(df, k=20, size=1000):
     return X, y
 
 
-test_df = parse_data_for_part2('test-data.dat', 'test-label.dat', 1000)
-print "test set parsed"
-train_df = parse_data_for_part2('train-data.dat', 'train-label.dat', 3000)
-print "train set parsed"
+if __name__ == "__main__":
 
-X_train, y_train = kmeans_approach(train_df, k=20, size=100)
-print "train set transformed"
+    test_df = parse_data_for_part2('test-data.dat', 'test-label.dat', 1000)
+    print "test set parsed"
+    train_df = parse_data_for_part2('train-data.dat', 'train-label.dat', 3000)
+    print "train set parsed"
 
-X_test, y_test = kmeans_approach(test_df, k=20, size=100)
-print "test set transformed"
+    X_test, y_test = kmeans_approach(test_df, k=20, size=100)
+    print "test set transformed"
 
-results = {}
-estimators = [("NB", GaussianNB()), ('SVM', SVC(kernel='linear', C=1, gamma=0.1)), ("DT", DecisionTreeClassifier())]
+    X_train, y_train = kmeans_approach(train_df, k=20, size=100)
+    print "train set transformed"
 
-for name, estimator in estimators:
-    estimator = estimator.fit(X_train, y_train)
-    y_pred = estimator.predict(X_test)
-    print classification_report(y_true=y_test, y_pred=y_pred)
-    print confusion_matrix(y_true=y_test, y_pred=y_pred)
-    accur = accuracy_score(y_true=y_test, y_pred=y_pred)
-    print "Accuracy: ", accur
-    results[name] = accur
+    results = {}
+    estimators = [("NB", GaussianNB()), ('SVM', SVC(kernel='linear', C=1, gamma=0.1)), ("DT", DecisionTreeClassifier())]
 
-colors = ["red", "green", "blue"]
-plt.title("Algorithm performance in a bag of instances problem")
-plt.ylabel("Accuracy %")
-plt.bar(range(len(results)), list(results.values()), align='center', color=colors)
-plt.xticks(range(len(results)), list(results.keys()))
-plt.show()
+    for name, estimator in estimators:
+        estimator = estimator.fit(X_train, y_train)
+        y_pred = estimator.predict(X_test)
+        print classification_report(y_true=y_test, y_pred=y_pred)
+        print confusion_matrix(y_true=y_test, y_pred=y_pred)
+        accur = accuracy_score(y_true=y_test, y_pred=y_pred)
+        print "Accuracy: ", accur
+        results[name] = accur
 
-# plt.figure()
+    colors = ["red", "green", "blue"]
+    plt.title("Algorithm performance in a bag of instances problem")
+    plt.ylabel("Accuracy %")
+    plt.bar(range(len(results)), list(results.values()), align='center', color=colors)
+    plt.xticks(range(len(results)), list(results.keys()))
+    plt.show()
+
+    # plt.figure()

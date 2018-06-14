@@ -1,0 +1,31 @@
+train set transformed
+             precision    recall  f1-score   support
+
+          0       0.57      0.69      0.63       583
+          1       0.40      0.28      0.33       418
+
+avg / total       0.50      0.52      0.50      1001
+
+[[405 178]
+ [300 118]]
+Accuracy:  0.5224775224775224
+             precision    recall  f1-score   support
+
+          0       0.58      0.99      0.73       583
+          1       0.43      0.01      0.01       418
+
+avg / total       0.52      0.58      0.43      1001
+
+[[579   4]
+ [415   3]]
+Accuracy:  0.5814185814185814
+             precision    recall  f1-score   support
+
+          0       0.58      0.68      0.63       583
+          1       0.41      0.31      0.36       418
+
+avg / total       0.51      0.53      0.51      1001
+
+[[396 187]
+ [287 131]]
+Accuracy:  0.5264735264735265

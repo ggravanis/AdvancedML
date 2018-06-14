@@ -1,0 +1,32 @@
+             precision    recall  f1-score   support
+
+          0       0.59      0.92      0.72       583
+          1       0.49      0.10      0.17       418
+
+avg / total       0.55      0.58      0.49      1001
+
+[[538  45]
+ [375  43]]
+Accuracy:  0.5804195804195804
+             precision    recall  f1-score   support
+
+          0       0.59      0.98      0.73       583
+          1       0.60      0.04      0.08       418
+
+avg / total       0.59      0.59      0.46      1001
+
+[[571  12]
+ [400  18]]
+Accuracy:  0.5884115884115884
+             precision    recall  f1-score   support
+
+          0       0.57      0.51      0.54       583
+          1       0.41      0.46      0.43       418
+
+avg / total       0.50      0.49      0.50      1001
+
+[[299 284]
+ [224 194]]
+Accuracy:  0.4925074925074925
+
+Process finished with exit code 0
